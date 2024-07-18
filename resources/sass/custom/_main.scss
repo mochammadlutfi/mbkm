@@ -1,0 +1,30 @@
+//
+// Custom Main
+//
+// Add your own styles or override existing ones
+//
+// This file is included last, so you have access
+// to all Bootstrap and Codebase functions/mixins/styles etc
+// --------------------------------------------------
+.nav-main-horizontal {
+    > .nav-main-item:hover {
+        border-bottom: 2px solid var(--bs-primary);
+    }
+}
+
+.nav-main:not(.nav-main-horizontal){
+    > .nav-main-item > .nav-main-link.active, > .nav-main-item > .nav-main-link:hover{
+        border-left: 4px solid var(--bs-primary);
+        background-color: tint-color($primary, 75%);
+    }
+}
+
+.shape-fill {
+    fill: #fff;
+    transform-origin: center;
+    transform: rotateY(0deg);
+}
+
+.icon-img {
+    width: 100px;
+}
