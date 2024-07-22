@@ -70,14 +70,14 @@ class LoginController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $pesan);
         if ($validator->fails()){
-            return back()->withErrors($validator->errors());
+            return back()->withErrors($validator->errors())->withInput();
         }else{
             if(auth()->guard('admin')->attempt(array('username' => $request->username, 'password' => $request->password), true))
             {
                 return redirect()->route('admin.beranda');
             }else{
                 $gagal['password'] = array('Password salah!');
-                return back()->withErrors($gagal);
+                return back()->withErrors($gagal)->withInput();
             }
         }
 

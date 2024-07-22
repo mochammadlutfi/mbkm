@@ -34,7 +34,7 @@
                                         <h1 class="h4 fw-bold mt-0 mb-4">Masuk</h1>
                                         <form method="POST" action="{{ route('admin.login') }}">
                                             @csrf
-                                            <x-input-field type="text" id="username" name="username" label="Username"/>
+                                            <x-input-field type="text" id="username" name="username" label="Username" value="{{ old('username')}}"/>
                                             <x-input-field type="password" id="password" name="password" label="Password"/>
                                             <div class="mb-4">
                                             <button type="submit" class="btn btn-lg btn-primary fw-medium w-100">
