@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
     });
         
     Route::get('/pendaftaran','ProgramController@user')->name('user.program');
+    Route::get('/pendaftaran/{id}','ProgramController@userShow')->name('user.program.show');
     Route::post('/program/simpan','ProgramController@register')->name('program.register');
     
 });
@@ -119,27 +120,17 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::delete('/{id}/delete','RegisterController@destroy')->name('delete');
             });
         
-            Route::prefix('/pengumuman')->name('pengumuman.')->group(function () {
-                Route::get('/','PengumumanController@index')->name('index');
-                Route::get('/tambah','PengumumanController@tambah')->name('tambah');
-                Route::post('/simpan','PengumumanController@simpan')->name('simpan');
-                Route::get('/{id}','PengumumanController@show')->name('show');
-                Route::get('/{id}/edit','PengumumanController@edit')->name('edit');
-                Route::post('{id}/update','PengumumanController@update')->name('update');
-                Route::delete('/{id}/delete','PengumumanController@destroy')->name('delete');
+            Route::prefix('/konversi')->name('konversi.')->group(function () {
+                Route::get('/','KonversiController@index')->name('index');
+                Route::get('/create','KonversiController@create')->name('create');
+                Route::post('/store','KonversiController@store')->name('store');
+                Route::get('/{id}','KonversiController@show')->name('show');
+                Route::get('/{id}/pdf','KonversiController@pdf')->name('pdf');
+                Route::get('/{id}/edit','KonversiController@edit')->name('edit');
+                Route::post('{id}/update','KonversiController@update')->name('update');
+                Route::delete('/{id}/delete','KonversiController@destroy')->name('delete');
             });
             
-            Route::prefix('/anggota')->name('anggota.')->group(function () {
-                Route::get('/','AnggotaController@index')->name('index');
-                Route::get('/tambah','AnggotaController@tambah')->name('tambah');
-                Route::post('/simpan','AnggotaController@simpan')->name('simpan');
-                Route::get('/baru','AnggotaController@baru')->name('baru');
-                Route::get('/{id}','AnggotaController@show')->name('show');
-                Route::get('/{id}/edit','AnggotaController@edit')->name('edit');
-                Route::post('{id}/confirm','AnggotaController@confirm')->name('confirm');
-                Route::post('{id}/update','AnggotaController@update')->name('update');
-                Route::delete('/{id}/delete','AnggotaController@destroy')->name('delete');
-            });
 
             Route::prefix('/pegawai')->name('pegawai.')->group(function () {
                 Route::get('/','PegawaiController@index')->name('index');
@@ -152,22 +143,7 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::delete('/{id}/delete','PegawaiController@destroy')->name('delete');
             });
 
-            Route::prefix('/absen')->name('absen.')->group(function () {
-                Route::get('/','AbsenController@index')->name('index');
-                Route::get('/tambah','AbsenController@tambah')->name('tambah');
-                Route::post('/simpan','AbsenController@simpan')->name('simpan');
-                Route::get('print/{ekskul}/{tgl}','AbsenController@print')->name('print');
-                Route::get('/{ekskul}/{tgl}','AbsenController@show')->name('show');
-                Route::get('/{id}/edit','AbsenController@edit')->name('edit');
-                Route::post('{id}/update','AbsenController@update')->name('update');
-                Route::delete('/{id}/delete','AbsenController@destroy')->name('delete');
-            });
             
-            Route::prefix('/galeri')->name('galeri.')->group(function () {
-                Route::get('/','GaleriController@index')->name('index');
-                Route::post('/store','GaleriController@store')->name('store');
-                Route::delete('/{id}/delete','GaleriController@destroy')->name('delete');
-            });
 
         });
     });

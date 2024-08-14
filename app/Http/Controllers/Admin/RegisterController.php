@@ -9,7 +9,6 @@ use Illuminate\Routing\Controller;
 use Carbon\Carbon;
 use Storage;
 use DataTables;
-
 use App\Models\User;
 use App\Models\Program;
 use App\Models\UserProgram;
@@ -23,49 +22,11 @@ class RegisterController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = UserProgram::with(['user', 'program'])
+        $data = UserProgram::with(['user', 'program'])
             ->orderBy('id', 'DESC')->get();
 
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<button type="button" class="btn btn-primary btn-sm" onclick="modalShow('. $row->id .')">Detail</a>';
-                    return $btn; 
-                })
-                ->editColumn('tgl', function ($row) {
-                    $tgl =  Carbon::parse($row->tgl)->translatedFormat('d F Y');
-                    return $tgl;
-                })
-                ->editColumn('created_at', function ($row) {
-                    $tgl = Carbon::parse($row->created_at);
-
-                    return $tgl->translatedFormat('d M Y');
-                })
-                ->editColumn('harga', function ($row) {
-                    $harga = ($row->program->harga) ? 'Rp '.number_format($row->program->harga,0,',','.') : 'Gratis';
-
-                    return $harga;
-                })
-                ->editColumn('status', function ($row) {
-                    if($row->status == 'belum bayar'){
-                        return '<span class="badge bg-danger">Belum Bayar</span>';
-                    }else if($row->status == 'sebagian'){
-                        return '<span class="badge bg-warning">Sebagian</span>';
-                    }else if($row->status == 'pending'){
-                        return '<span class="badge bg-primary">Pending</span>';
-                    }else if($row->status == 'lunas'){
-                        return '<span class="badge bg-success">Lunas</span>';
-                    }else if($row->status == 'batal'){
-                        return '<span class="badge bg-secondary">Batal</span>';
-                    }
-                })
-                ->rawColumns(['action', 'status', 'harga']) 
-                ->make(true);
-        }
-        $program = Program::where('status', 'buka')->orderBy('id', 'ASC')->get();
-        return view('admin.pembayaran',[
-            'program' => $program
+        return view('admin.pendaftaran.index',[
+            'data' => $data
         ]);
     }
 
@@ -145,51 +106,8 @@ class RegisterController extends Controller
     public function show($id)
     {
         $data = UserProgram::with(['user', 'program'])->where('id', $id)->first();
-        $harga = ($data->program->harga) ? 'Rp '.number_format($data->program->harga,0,',','.') : 'Gratis';
 
-        $html = '
-        <div class="row mb-3">
-            <label class="col-sm-4 fw-medium">Peserta</label>
-            <div class="col-sm-6">
-                : '. $data->user->nama .'
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label class="col-sm-4 fw-medium">Training</label>
-            <div class="col-sm-6">
-                : '. $data->training->nama .'
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label class="col-sm-4 fw-medium">Tanggal Bayar</label>
-            <div class="col-sm-6">
-                : '. Carbon::parse($data->tgl)->translatedFormat('d F Y') .'
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label class="col-sm-4 fw-medium">Jumlah Bayar</label>
-            <div class="col-sm-6">
-                : '.$harga.'
-            </div>
-        </div>';
-
-        if($data->status == 'pending'){
-            $html.= ' <div class="border-top py-3 text-end">
-                <button type="button" class="btn btn-alt-danger" data-bs-dismiss="modal" onclick="updateStatus('.$data->id .', `tolak`)">
-                    Tolak
-                </button>
-                <button type="submit" class="btn btn-alt-primary" id="btn-simpan" onclick="updateStatus('.$data->id .', `lunas`)">
-                    Konfirmasi
-                </button>
-            </div>';
-        }else{
-            $html.= ' <div class="border-top py-3 text-end">
-                <button type="button" class="btn btn-alt-danger" data-bs-dismiss="modal" onclick="hapus('.$data->id .')">
-                    Hapus
-                </button>
-            </div>';
-        }
-        echo $html;
+        return view('admin.pendaftaran.detail', compact('data'));
     }
 
     

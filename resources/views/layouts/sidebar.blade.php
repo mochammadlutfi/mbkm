@@ -52,6 +52,12 @@
                             <span class="nav-main-link-name">Pendaftaran</span>
                         </a>
                     </li>
+                    <li class="nav-main-item">
+                        <a class="nav-main-link {{ request()->is('admin/konversi') ? ' active' : '' }}" href="{{ route('admin.konversi.index') }}">
+                            <i class="nav-main-link-icon fa fa-wallet"></i>
+                            <span class="nav-main-link-name">Konversi</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
             <!-- END Side Navigation -->

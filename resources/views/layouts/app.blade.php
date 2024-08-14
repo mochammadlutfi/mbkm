@@ -17,13 +17,12 @@
         <link rel="stylesheet" href="/js/plugins/datatables-responsive-bs5/css/responsive.bootstrap5.min.css">
         <link rel="stylesheet" href="/js/plugins/select2/css/select2.min.css">
         <link rel="stylesheet" href="/js/plugins/flatpickr/flatpickr.min.css">
-
         @stack('styles')
         <!-- Scripts -->
         @vite(['resources/sass/main.scss', 'resources/js/codebase/app.js', 'resources/js/app.js'])
     </head>
     <body>
-        <div id="page-container" class="sidebar-o enable-page-overlay side-scroll page-header-fixed main-content-boxed side-trans-enabled">
+        <div id="page-container" class="sidebar-o enable-page-overlay page-header-modern side-scroll page-header-fixed main-content-boxed side-trans-enabled">
             @include('layouts.sidebar')
 
             @include('layouts.header')

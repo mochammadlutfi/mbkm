@@ -2,9 +2,11 @@
     <div class="content">
         <div class="block block-rounded">
             <div class="block-header">
-                <div class="block-title">Data Pendaftaran</div>
+                <div class="block-title">Data Konversi</div>
                 <div class="block-options">
-                    
+                    <a href="{{ route('admin.konversi.create')}}" class="btn btn-primary">
+                    Tambah Konversi
+                    </a>
                 </div>
             </div>
             <div class="block-content p-3">
@@ -12,11 +14,10 @@
                     <thead>
                         <tr>
                             <th width="60px">No</th>
-                            <th>No Pendaftaran</th>
-                            <th>Tgl Daftar</th>
+                            {{-- <th>Kode Konversi</th> --}}
+                            <th>Kode Pendaftaran</th>
                             <th>Mahasiswa</th>
                             <th>Program</th>
-                            <th>Status</th>
                             <th width="60px">Aksi</th>
                         </tr>
                     </thead>
@@ -24,19 +25,18 @@
                         @foreach ($data as $d)
                         <tr>
                             <td>{{ $loop->index+1 }}</td>
-                            <td>{{ $d->kode }}</td>
-                            <td>{{ \Carbon\Carbon::parse($d->created_at)->translatedFormat('d F Y H:i') }} WIB</td>
+                            {{-- <td>{{ $d->kode }}</td> --}}
+                            <td>{{ $d->daftar->kode }}</td>
                             <td>
-                                {{ $d->user->nim }}<br>
-                                {{ $d->user->nama }}
+                                {{ $d->daftar->user->nim }}<br>
+                                {{ $d->daftar->user->nama }}
                             </td>
                             <td>
-                                {{ $d->program->kategori->nama }}<br/>
-                                {{ $d->program->nama }}
+                                {{ $d->daftar->program->kategori->nama }}<br/>
+                                {{ $d->daftar->program->nama }}
                             </td>
-                            <td>{{ $d->status }}</td>
                             <td>
-                                <a href="{{ route('admin.register.show', $d->id) }}">
+                                <a href="{{ route('admin.konversi.show', $d->id) }}">
                                     Detail
                                 </a>
                             </td>

@@ -98,7 +98,6 @@ class ProgramController extends Controller
             'deskripsi' => 'required',
             'lokasi' => 'required',
             'tgl_daftar' => 'required',
-            // 'tgl_pelaksanaan' => 'required',
             'kuota' => 'required',
         ];
 

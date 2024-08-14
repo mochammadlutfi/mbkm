@@ -18,7 +18,6 @@
                             <th>Kode</th>
                             <th>Nama</th>
                             <th>SKS</th>
-                            <th>Total Program</th>
                             <th width="160px">Aksi</th>
                         </tr>
                     </thead>
@@ -105,9 +104,6 @@
                         }, {
                             data: 'sks',
                             name: 'sks'
-                        }, {
-                            data: 'program_count',
-                            name: 'program_count'
                         }, {
                             data : 'action',
                             name : 'action',
