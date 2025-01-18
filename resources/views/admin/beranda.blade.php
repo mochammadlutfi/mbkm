@@ -35,6 +35,22 @@
                     </div>
                 </a>
             </div>
+            <div class="col-6 col-xl-4">
+                <a
+                    class="block block-rounded block-link-rotate text-end"
+                    href="{{ route('admin.register.index') }}">
+                    <div
+                        class="block-content block-content-full d-sm-flex justify-content-between align-items-center">
+                        <div class="d-none d-sm-block">
+                            <i class="far fa-address-book fa-2x opacity-25"></i>
+                        </div>
+                        <div class="text-end">
+                            <div class="fs-3 fw-semibold">{{ $ovr['pendaftar'] }}</div>
+                            <div class="fs-sm fw-semibold text-uppercase text-muted">Pendaftar</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
             <!-- END Row #1 -->
         </div>
         

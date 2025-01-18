@@ -45,15 +45,22 @@ class KonversiController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $rules = [
             'user_program_id' => 'required',
             'tgl' => 'required',
+            'lines.*.mitra_matkul_id' => 'required',
+            'lines.*.mitra_nilai' => 'required',
+            'lines.*.matkul_id' => 'required',
+            'lines.*.nilai' => 'required',
         ];
 
         $pesan = [
             'user_program_id.required' => 'No Pendaftaran Wajib Diisi!',
             'tgl.required' => 'Tanggal Wajib Diisi!',
+            'lines.*.mitra_matkul_id.required' => 'Mata Kuliah Mitra Wajib Diisi!',
+            'lines.*.mitra_nilai.required' => 'Nilai Mitra Wajib Diisi!',
+            'lines.*.matkul_id.required' => 'Mata Kuliah Wajib Diisi!',
+            'lines.*.nilai.required' => 'Nilai Wajib Diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $pesan);

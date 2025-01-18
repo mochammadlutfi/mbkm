@@ -17,6 +17,7 @@ class BerandaController extends Controller
         $ovr = Collect([
             'program' => Program::get()->count(),
             'user' => User::get()->count(),
+            'pendaftar' => UserProgram::get()->count()
         ]);
 
         $now = Carbon::today();

@@ -48,13 +48,13 @@
                     </li>
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/pendaftaran') ? ' active' : '' }}" href="{{ route('admin.register.index') }}">
-                            <i class="nav-main-link-icon fa fa-wallet"></i>
+                            <i class="nav-main-link-icon far fa-address-book"></i>
                             <span class="nav-main-link-name">Pendaftaran</span>
                         </a>
                     </li>
                     <li class="nav-main-item">
                         <a class="nav-main-link {{ request()->is('admin/konversi') ? ' active' : '' }}" href="{{ route('admin.konversi.index') }}">
-                            <i class="nav-main-link-icon fa fa-wallet"></i>
+                            <i class="nav-main-link-icon fa fa-arrow-right-arrow-left"></i>
                             <span class="nav-main-link-name">Konversi</span>
                         </a>
                     </li>

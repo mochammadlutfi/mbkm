@@ -4,6 +4,7 @@
             <span>Data Konversi</span>
             <div class="space-x-1">
                 <a href="{{ route('admin.konversi.create')}}" class="btn btn-primary btn-sm ">
+                    <i class="fa fa-plus me-1"></i>
                 Tambah Konversi
                 </a>
             </div>

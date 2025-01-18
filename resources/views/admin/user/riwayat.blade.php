@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Riwayat Pelatihan</span>
+            <span>Riwayat Program</span>
             <div class="space-x-1">
 
             </div>
@@ -13,12 +13,31 @@
                         <tr>
                             <th width="60px">No</th>
                             <th>Nomor</th>
-                            <th>Training</th>
+                            <th>Program</th>
                             <th>Tanggal</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($riwayat as $d)
+                            <tr>
+                                <td>{{ $loop->index+1 }}</td>
+                                <td>{{ $d->kode }}</td>
+                                <td>{{ $d->program->nama }}</td>
+                                <td>{{ \Carbon\Carbon::parse($d->tgl)->format('d F Y') }}</td>
+                                <td>
+                                    @if($d->status == 'pending')
+                                        <span class="badge bg-warning px-3">Pending</span>
+                                    @elseif($d->status == 'terima')
+                                        <span class="badge bg-success px-3">Diterima</span>
+                                    @elseif($d->status == 'tolak')
+                                        <span class="badge bg-danger px-3">Ditolak</span>
+                                    @else
+                                        <span class="badge bg-secondary px-3">Batal</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -29,17 +48,7 @@
         <script>
             $(function () {
                 $('.datatable').DataTable({
-                    processing: true,
-                    serverSide: true,
                     dom : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                    ajax: "{{ route('admin.user.riwayat', $data->id) }}",
-                    columns: [
-                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                        {data: 'nomor', name: 'nomor'},
-                        {data: 'training.nama', name: 'training.nama'},
-                        {data: 'tgl', name: 'tgl'},
-                        {data: 'training.status', name: 'training.status'},
-                    ]
                 });
             });
         function hapus(id){

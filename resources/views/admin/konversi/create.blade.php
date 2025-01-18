@@ -3,14 +3,14 @@
     @endpush
 
     <div class="content">
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <span>Tambah Konversi</span>
+            <div class="space-x-1">
+            </div>
+        </div>
         <form method="POST" action="{{ route('admin.konversi.store') }}">
             @csrf
             <div class="block block-rounded">
-                <div class="block-header">
-                    <div class="block-title">Tambah Konversi</div>
-                    <div class="block-options">
-                    </div>
-                </div>
                 <div class="block-content p-4">
                     <div class="row">
                         <div class="col-md-6">
@@ -18,6 +18,7 @@
                         </div>
                         <div class="col-md-6">
                             <x-input-field type="text" name="tgl" label="Tanggal" id="tgl"/>
+                            {{-- {{ $errors->first('tgl') }} --}}
                         </div>
                     </div>
                     
@@ -60,12 +61,12 @@
                                     1
                                 </td>
                                 <td>
-                                    <select class="form-control mitra_matkul" name="lines[0][mitra_matkul_id]">
+                                    <select class="form-control mitra_matkul" required name="lines[0][mitra_matkul_id]">
                                         <option value="">Pilih</option>
                                         @foreach ($matkul as $m)
                                             <option value="{{ $m->id}}" data-sks="{{ $m->sks}}">{{ $m->nama }}</option>
                                         @endforeach
-                                    </select> 
+                                    </select>
                                 </td>
                                 <td>
                                     <span class="showMitraSKS">0</span>
@@ -74,7 +75,7 @@
                                     <input type="text" name="lines[0][mitra_nilai]" class="form-control"/>
                                 </td>
                                 <td>
-                                    <select class="form-control matkul" name="lines[0][matkul_id]">
+                                    <select class="form-control matkul required" name="lines[0][matkul_id]">
                                         <option value="">Pilih</option>
                                         @foreach ($matkul as $m)
                                             <option value="{{ $m->id}}" data-sks="{{ $m->sks}}">{{ $m->nama }}</option>
@@ -85,7 +86,7 @@
                                     <span class="showSKS">0</span>
                                 </td>
                                 <td>
-                                    <input type="text" name="lines[0][nilai]" class="form-control"/>
+                                    <input type="text" name="lines[0][nilai]" class="form-control" required/>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-danger btn_delete">
@@ -152,7 +153,7 @@
                 <tr class="row-${idx}">
                     <td>${idx+1}</td>
                     <td>
-                        <select class="form-control mitra_matkul" name="lines[${idx}][mitra_matkul_id]">
+                        <select class="form-control mitra_matkul" required name="lines[${idx}][mitra_matkul_id]">
                             <option value="">Pilih</option>
                             @foreach ($matkul as $m)
                                 <option value="{{ $m->id}}" data-sks="{{ $m->sks}}">{{ $m->nama }}</option>
@@ -166,7 +167,7 @@
                         <input type="text" name="lines[${idx}][mitra_nilai]" class="form-control"/>
                     </td>
                     <td>
-                        <select class="form-control matkul" name="lines[${idx}][matkul_id]">
+                        <select class="form-control matkul" required name="lines[${idx}][matkul_id]">
                             <option value="">Pilih</option>
                             @foreach ($matkul as $m)
                                 <option value="{{ $m->id}}" data-sks="{{ $m->sks}}">{{ $m->nama }}</option>
@@ -177,7 +178,7 @@
                         <span class="showSKS">0</span>
                     </td>
                     <td>
-                        <input type="text" name="lines[${idx}][nilai]" class="form-control"/>
+                        <input type="text" name="lines[${idx}][nilai]" required class="form-control"/>
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger btn_delete">
