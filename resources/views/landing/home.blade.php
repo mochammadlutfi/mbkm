@@ -13,7 +13,7 @@
             <p class="text-muted fw-medium mb-4">
                 Kampus Merdeka merupakan bagian dari kebijakan Merdeka Belajar oleh Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia yang memberikan kesempaatan bagi mahasiswa/i untuk mengasah kemampuan sesuai bakat dan minat dengan terjun langsung ke dunia kerja sebagai persiapan karier masa depan.
             </p>
-            <a class="btn btn-alt-primary py-3 px-4" href="be_pages_dashboard.html" target="_blank">
+            <a class="btn btn-alt-primary py-3 px-4" href="{{ route('program.index')}}">
               <i class="fa fa-arrow-right opacity-50 me-1"></i> Cari Program
             </a>
           </div>

@@ -76,15 +76,19 @@ class ProfilController extends Controller
         ]);
     }
     
-    public function passwordUpdate(Request $request)
+    public function updatePassword(Request $request)
     {
         $rules = [
+            'old_password' => 'required',
             'password' => 'required|same:password_confirmation',
+            'password_confirmation' => 'required'
         ];
 
         $pesan = [
-            'password.required' => 'Password Wajib Diisi!',
+            'old_password.required' => 'Password Wajib Diisi',
+            'password.required' => 'Password Wajib Diisi',
             'password.same' => 'Konfirmasi Password Tidak Sama!',
+            'password_confirmation.required' => 'Konfirmasi Password Wajib Diisi'
         ];
         
         $validator = Validator::make($request->all(), $rules, $pesan);

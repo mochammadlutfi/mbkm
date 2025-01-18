@@ -1,12 +1,13 @@
 <x-app-layout>
     <div class="content">
-        <div class="block block-rounded">
-            <div class="block-header">
-                <div class="block-title">Data Pendaftaran</div>
-                <div class="block-options">
-                    
-                </div>
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <span>Data Pendaftaran</span>
+            <div class="space-x-1">
+                
             </div>
+        </div>
+
+        <div class="block block-rounded">
             <div class="block-content p-3">
                 <table class="table table-bordered datatable w-100">
                     <thead>
@@ -34,9 +35,19 @@
                                 {{ $d->program->kategori->nama }}<br/>
                                 {{ $d->program->nama }}
                             </td>
-                            <td>{{ $d->status }}</td>
                             <td>
-                                <a href="{{ route('admin.register.show', $d->id) }}">
+                                @if($d->status == 'pending')
+                                    <span class="badge bg-warning px-3">Pending</span>
+                                @elseif($d->status == 'terima')
+                                    <span class="badge bg-success px-3">Diterima</span>
+                                @elseif($d->status == 'tolak')
+                                    <span class="badge bg-danger px-3">Ditolak</span>
+                                @else
+                                    <span class="badge bg-secondary px-3">Batal</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.register.show', $d->id) }}" class="btn btn-primary btn-sm">
                                     Detail
                                 </a>
                             </td>

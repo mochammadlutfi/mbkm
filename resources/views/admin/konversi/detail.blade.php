@@ -1,14 +1,14 @@
 <x-app-layout>
     <div class="content">
-        <div class="block block-rounded">
-            <div class="block-header">
-                <h3 class="block-title">Detail Konversi</h3>
-                <div class="block-options">
-                    <a href="{{ route('admin.konversi.pdf', $data->id)}}" class="btn btn-primary">
-                        Download PDF
-                    </a>
-                </div>
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <span>Detail Konversi</span>
+            <div class="space-x-1">
+                <a href="{{ route('admin.konversi.pdf', $data->id)}}" class="btn btn-primary btn-sm ">
+                    Download PDF
+                </a>
             </div>
+        </div>
+        <div class="block block-rounded">
             <div class="block-content p-4">
                 <div class="row">
                     <div class="col-md-6">

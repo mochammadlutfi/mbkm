@@ -10,8 +10,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Training;
 use Storage;
 use Carbon\Carbon;
-use App\Models\UserTraining;
+use App\Models\UserProgram;
 use App\Models\User;
+use App\Models\Program;
 use PDF;
 
 class UserProgramController extends Controller
@@ -23,55 +24,15 @@ class UserProgramController extends Controller
      */
     public function index($id, Request $request)
     {
-        if ($request->ajax()) {
-            $query = UserTraining::with('user')->where('training_id', $id)->get();
 
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('action', function($row) use($id){
-                    $btn = '<div class="dropdown">
-                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" id="dropdown-default-outline-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Aksi
-                        </button>
-                        <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-outline-primary" style="">';
-                    if($row->status == 'lunas'){
-                        $btn .= '<a class="dropdown-item" target="_blank" href="'. route('admin.training.peserta.certificate', ['id' => $id, 'user'=>$row->id]).'"><i class="si si-badge me-1"></i>Sertifikat</a>';
-                    }
-                        
-                        $btn .= '<a class="dropdown-item" href="javascript:void(0)" onclick="hapus('. $row->id.')"><i class="si si-trash me-1"></i>Hapus</a>';
-                    $btn .= '</div></div>';
-                    // $btn = '<button type="button" class="btn btn-sm btn-danger" onclick="hapus('. $row->id.')"><i class="fa fa-trash me-1"></i>Hapus</button>';
-
-                    return $btn; 
-                })
-                ->editColumn('created_at', function ($row) {
-                    $tgl = Carbon::parse($row->created_at);
-
-                    return $tgl->translatedFormat('d M Y');
-                })
-                ->editColumn('status', function ($row) {
-                    if($row->status == 'belum bayar'){
-                        return '<span class="badge bg-danger">Belum Bayar</span>';
-                    }else if($row->status == 'sebagian'){
-                        return '<span class="badge bg-warning">Sebagian</span>';
-                    }else if($row->status == 'pending'){
-                        return '<span class="badge bg-primary">Menunggu Konfirmasi</span>';
-                    }else if($row->status == 'lunas'){
-                        return '<span class="badge bg-success">Lunas</span>';
-                    }else if($row->status == 'batal'){
-                        return '<span class="badge bg-secondary">Batal</span>';
-                    }
-                })
-                ->rawColumns(['action','status']) 
-                ->make(true);
-        }
-
-        $data = Training::where('id', $id)->first();
+        $peserta = UserProgram::with('user')->where('program_id', $id)->get();
+        $data = Program::where('id', $id)->first();
         $user = User::orderBy('nama', 'ASC')->get();
 
-        return view('admin.training.peserta',[
+        return view('admin.program.peserta',[
             'data' => $data,
-            'user' => $user
+            'user' => $user,
+            'peserta' => $peserta,
         ]);
     }
 
@@ -86,10 +47,10 @@ class UserProgramController extends Controller
         DB::beginTransaction();
         try{
 
-            $data = new UserTraining();
+            $data = new UserProgram();
             $data->nomor = $this->getNumber($id);
             $data->user_id = $request->user_id;
-            $data->training_id = $id;
+            $data->program_id = $id;
             $data->status = $request->status;
             $data->save();
 
@@ -126,7 +87,7 @@ class UserProgramController extends Controller
      */
     public function certificate($id, $user)
     {
-        $data = UserTraining::with(['user', 'training'])->where('id', $user)->first();
+        $data = UserProgram::with(['user', 'training'])->where('id', $user)->first();
 
         $config = [
             'format' => 'A4-L' // Landscape
@@ -220,7 +181,7 @@ class UserProgramController extends Controller
         DB::beginTransaction();
         try{
 
-            $data = UserTraining::where('id', $id)->first();
+            $data = UserProgram::where('id', $id)->first();
             $data->delete();
 
         }catch(\QueryException $e){
@@ -241,7 +202,7 @@ class UserProgramController extends Controller
 
     private function getNumber($training)
     {
-        $q = UserTraining::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));
+        $q = UserProgram::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));
 
         $code = $training.'/';
         $no = 1;

@@ -54,12 +54,10 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
     Route::middleware(['auth:admin'])->group(function () {
         Route::post('/logout','LoginController@logout')->name('logout');
 
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-        Route::get('/password', [ProfileController::class, 'password'])->name('password');
-        Route::post('/password', [ProfileController::class, 'passwordUpdate'])->name('password.update');
+        Route::get('/profile','ProfileController@index')->name('profile.edit');
+        Route::post('/profile','ProfileController@update')->name('profile.update');
+        Route::get('/password','ProfileController@password')->name('password');
+        Route::post('/password','ProfileController@passwordUpdate')->name('password.update');
 
         Route::middleware('verified')->group(function () {
             Route::get('/beranda','BerandaController@index')->name('beranda');

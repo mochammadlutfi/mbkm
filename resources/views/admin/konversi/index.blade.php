@@ -1,20 +1,19 @@
 <x-app-layout>
     <div class="content">
-        <div class="block block-rounded">
-            <div class="block-header">
-                <div class="block-title">Data Konversi</div>
-                <div class="block-options">
-                    <a href="{{ route('admin.konversi.create')}}" class="btn btn-primary">
-                    Tambah Konversi
-                    </a>
-                </div>
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <span>Data Konversi</span>
+            <div class="space-x-1">
+                <a href="{{ route('admin.konversi.create')}}" class="btn btn-primary btn-sm ">
+                Tambah Konversi
+                </a>
             </div>
+        </div>
+        <div class="block block-rounded">
             <div class="block-content p-3">
                 <table class="table table-bordered datatable w-100">
                     <thead>
                         <tr>
                             <th width="60px">No</th>
-                            {{-- <th>Kode Konversi</th> --}}
                             <th>Kode Pendaftaran</th>
                             <th>Mahasiswa</th>
                             <th>Program</th>
@@ -25,7 +24,6 @@
                         @foreach ($data as $d)
                         <tr>
                             <td>{{ $loop->index+1 }}</td>
-                            {{-- <td>{{ $d->kode }}</td> --}}
                             <td>{{ $d->daftar->kode }}</td>
                             <td>
                                 {{ $d->daftar->user->nim }}<br>
@@ -36,7 +34,7 @@
                                 {{ $d->daftar->program->nama }}
                             </td>
                             <td>
-                                <a href="{{ route('admin.konversi.show', $d->id) }}">
+                                <a href="{{ route('admin.konversi.show', $d->id) }}" class="btn btn-primary btn-sm">
                                     Detail
                                 </a>
                             </td>

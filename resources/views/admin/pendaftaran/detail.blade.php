@@ -1,19 +1,19 @@
 <x-app-layout>
     <div class="content">
-        <div class="block block-rounded">
-            <div class="block-header">
-                <h3 class="block-title">Detail Pendaftaran</h3>
-                <div class="block-options">
-                    @if($data->status == 'pending')
-                    <button type="button" class="btn btn-primary" onclick="updateStatus('terima')">
+        <div class="content-heading d-flex justify-content-between align-items-center">
+            <span>Detail Konversi</span>
+            <div class="space-x-1">
+                @if($data->status == 'pending')
+                <button type="button" class="btn btn-sm btn-primary" onclick="updateStatus('terima')">
                     Terima
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="updateStatus('tolak')">
-                        Tolak
-                    </button>
-                    @endif
-                </div>
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" onclick="updateStatus('tolak')">
+                    Tolak
+                </button>
+                @endif
             </div>
+        </div>
+        <div class="block block-rounded">
             <div class="block-content p-4">
                 <div class="row">
                     <div class="col-md-6">

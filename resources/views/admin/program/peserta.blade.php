@@ -20,10 +20,29 @@
                             <th>Email</th>
                             <th>Tgl Daftar</th>
                             <th>Status</th>
-                            <th width="60px">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($peserta as $d)
+                        <tr>
+                            <td>{{ $loop->index+1 }}</td>
+                            <td>{{ $d->user->nama }}</td>
+                            <td>{{ $d->user->hp }}</td>
+                            <td>{{ $d->user->email }}</td>
+                            <td>{{ \Carbon\Carbon::parse($d->created_at)->translatedFormat('d F Y') }}</td>
+                            <td>
+                                @if($d->status == 'pending')
+                                    <span class="badge bg-warning px-3">Pending</span>
+                                @elseif($d->status == 'terima')
+                                    <span class="badge bg-success px-3">Diterima</span>
+                                @elseif($d->status == 'tolak')
+                                    <span class="badge bg-danger px-3">Ditolak</span>
+                                @else
+                                    <span class="badge bg-secondary px-3">Batal</span>
+                                @endif
+                            </td>
+                        </tr>                            
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -93,24 +112,7 @@
         <script>
             $(function () {
                 $('.datatable').DataTable({
-                    processing: true,
-                    serverSide: true,
                     dom : "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>><'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                    ajax: "{{ route('admin.training.peserta', $data->id) }}",
-                    columns: [
-                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                        {data: 'user.nama', name: 'user.nama'},
-                        {data: 'user.hp', name: 'user.hp'},
-                        {data: 'user.email', name: 'user.email'},
-                        {data: 'created_at', name: 'created_at'},
-                        {data: 'status', name: 'status'},
-                        {
-                            data: 'action', 
-                            name: 'action', 
-                            orderable: true, 
-                            searchable: true
-                        },
-                    ]
                 });
             });
             
@@ -122,7 +124,7 @@
                 formData.append('_token', token);
 
                 $.ajax({
-                    url: "{{ route('admin.training.peserta.store', $data->id) }}",
+                    url: "{{ route('admin.program.peserta.store', $data->id) }}",
                     type: "POST",
                     data: formData,
                     cache: false,

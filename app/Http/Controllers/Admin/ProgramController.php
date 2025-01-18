@@ -187,7 +187,6 @@ class ProgramController extends Controller
             'deskripsi' => 'required',
             'lokasi' => 'required',
             'tgl_daftar' => 'required',
-            'tgl_training' => 'required',
             'kuota' => 'required',
         ];
 
@@ -196,7 +195,7 @@ class ProgramController extends Controller
             'deskripsi.required' => 'Deskripsi Wajib Diisi!',
             'lokasi.required' => 'Lokasi Wajib Diisi!',
             'tgl_daftar.required' => 'Tanggal Pendaftaran Wajib Diisi!',
-            'tgl_training.required' => 'Tanggal Training Wajib Diisi!',
+            'tgl_pelaksanaan.required' => 'Tanggal Training Wajib Diisi!',
             'kuota.required' => 'Kuota Peserta Wajib Diisi!',
         ];
 
@@ -207,34 +206,21 @@ class ProgramController extends Controller
             DB::beginTransaction();
             try{
                 $tgl_daftar = explode(" - ",$request->tgl_daftar);
-                $tgl_training = explode(" - ",$request->tgl_training);
-                
-                $data = Training::where('id', $id)->first();
+                $tgl_pelaksanaan = explode(" - ",$request->tgl_pelaksanaan);
+
+                $data = Program::where('id', $id)->first();
                 $data->nama = $request->nama;
-                $data->jenis = $request->jenis;
+                $data->skema = $request->skema;
+                $data->kategori_id = $request->kategori_id;
                 $data->lokasi = $request->lokasi;
+                $data->mitra = $request->mitra;
                 $data->deskripsi = $request->deskripsi;
                 $data->tgl_mulai_daftar = $tgl_daftar[0];
                 $data->tgl_selesai_daftar = (count($tgl_daftar) > 1) ? $tgl_daftar[1] : null;
-                $data->tgl_mulai = $tgl_training[0];
-                $data->tgl_selesai = (count($tgl_training) > 1) ? $tgl_training[1] : null;
+                $data->tgl_mulai =  (count($tgl_pelaksanaan) > 1) ? $tgl_pelaksanaan[0] : null;
+                $data->tgl_selesai = (count($tgl_pelaksanaan) > 1) ? $tgl_pelaksanaan[1] : null;
                 $data->kuota = $request->kuota;
                 $data->status = $request->status;
-                $data->waktu_mulai = $request->waktu_mulai;
-                $data->waktu_selesai = $request->waktu_selesai;
-                $data->harga = isset($request->harga) ? $request->harga : 0;
-                
-                if($request->foto){
-                    $fileName = time() . '.' . $request->foto->extension();
-                    Storage::disk('public')->putFileAs('uploads/training', $request->foto, $fileName);
-                    $data->foto = '/uploads/training/'.$fileName;
-                }
-               
-                if($request->hasfile('document')){
-                    $fileName = time() . '.' . $request->document->extension();
-                    Storage::disk('public')->putFileAs('uploads/training', $request->document, $fileName);
-                    $data->document = '/uploads/training/'.$fileName;
-                }
                 $data->save();
 
             }catch(\QueryException $e){
@@ -258,7 +244,7 @@ class ProgramController extends Controller
         DB::beginTransaction();
         try{
 
-            $data = Training::where('id', $id)->first();
+            $data = Program::where('id', $id)->first();
             $data->delete();
 
         }catch(\QueryException $e){
@@ -303,7 +289,7 @@ class ProgramController extends Controller
         }else{
             DB::beginTransaction();
             try{
-                $data = Training::where('id', $request->id)->first();
+                $data = Program::where('id', $request->id)->first();
                 $data->status = $request->status;
                 $data->save();
 
@@ -325,49 +311,13 @@ class ProgramController extends Controller
     
     public function peserta($id, Request $request)
     {
-        if ($request->ajax()) {
-            $query = UserProgram::with('user')->where('training_id', $id)->get();
-
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<div class="dropdown">
-                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" id="dropdown-default-outline-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Aksi
-                        </button>
-                        <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-outline-primary" style="">';
-                        $btn .= '<a class="dropdown-item" href="'. route('admin.program.edit', $row->id).'"><i class="si si-note me-1"></i>Ubah</a>';
-                        $btn .= '<a class="dropdown-item" href="javascript:void(0)" onclick="hapus('. $row->id.')"><i class="si si-trash me-1"></i>Hapus</a>';
-                    $btn .= '</div></div>';
-                    return $btn; 
-                })
-                ->editColumn('tgl_training', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->editColumn('tgl_daftar', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai_daftar);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai_daftar);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai_daftar == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d M') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->rawColumns(['action',]) 
-                ->make(true);
-        }
-
-        $data = Training::where('id', $id)->first();
+        $data = Program::where('id', $id)->first();
         $user = User::orderBy('nama', 'ASC')->get();
+        $peserta = UserProgram::with('user')->where('program_id', $id)->get();
 
         return view('admin.program.peserta',[
             'data' => $data,
+            'peserta' => $peserta,
             'user' => $user
         ]);
     }
