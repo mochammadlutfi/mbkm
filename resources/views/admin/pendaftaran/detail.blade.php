@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="content">
         <div class="content-heading d-flex justify-content-between align-items-center">
-            <span>Detail Konversi</span>
+            <span>Detail Pendaftaran</span>
             <div class="space-x-1">
                 @if($data->status == 'pending')
                 <button type="button" class="btn btn-sm btn-primary" onclick="updateStatus('terima')">

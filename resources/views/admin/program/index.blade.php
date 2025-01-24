@@ -28,6 +28,54 @@
             </div>
         </div>
     </div>
+    <div
+        class="modal"
+        id="modal-status"
+        aria-labelledby="modal-status"
+        style="display: none;"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form-status"  onsubmit="return false;" enctype="multipart/form-data">
+                    <div class="block block-rounded shadow-none mb-0">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Ubah Status Program</h3>
+                            <div class="block-options">
+                                <button
+                                    type="button"
+                                    class="btn-block-option"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content fs-sm">
+                            <input type="hidden" name="id" id="field-id"/>
+                            <div class="mb-4">
+                                <label for="field-tgl">Status</label>
+                                <select class="form-select" id="field-status" style="width: 100%;" name="status" data-placeholder="Pilih Status">
+                                    <option value="draft">Draft</option>
+                                    <option value="buka">Dibuka</option>
+                                    <option value="tutup">Tutup</option>
+                                </select>
+                                <div class="invalid-feedback" id="error-status"></div>
+                            </div>
+                            <div
+                                class="block-content block-content-full block-content-sm text-end border-top">
+                                <button type="button" class="btn btn-alt-secondary" data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+                                <button type="submit" class="btn btn-alt-primary" id="btn-simpan">
+                                    Simpan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     @push('scripts')
         <script>
@@ -61,7 +109,7 @@
             formData.append('_token', token);
 
             $.ajax({
-                url: "/admin/training/status",
+                url: "/admin/program/status",
                 type: "POST",
                 data: formData,
                 cache: false,
