@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Models\Konversi;
+use App\Models\User;
 use App\Models\UserProgram;
 use App\Models\Matkul;
 use App\Models\KonversiDetail;
@@ -32,9 +33,10 @@ class KonversiController extends Controller
      */
     public function create()
     {
-        $daftar = UserProgram::where('status', 'terima')->select('id as value', 'kode as label')->get();
+        $daftar = UserProgram::where('status', 'terima')->get();
+        $mahasiswa = User::select('id as value', 'nama as label')->latest()->get();
         $matkul = Matkul::latest()->get();
-        return view('admin.konversi.create', compact('daftar', 'matkul'));
+        return view('admin.konversi.create', compact('daftar', 'matkul', 'mahasiswa'));
     }
 
     /**
@@ -70,6 +72,7 @@ class KonversiController extends Controller
             DB::beginTransaction();
             try{
                 $data = new Konversi();
+                $data->user_id = $request->user_id;
                 $data->user_program_id = $request->user_program_id;
                 $data->tgl = $request->tgl;
                 $data->save();

@@ -117,6 +117,7 @@ class RegisterController extends Controller
         try{
             $data = UserProgram::where('id', $id)->first();
             $data->status = $request->status;
+            $data->keterangan = $request->keterangan;
             $data->save();
         }catch(\QueryException $e){
             DB::rollback();
@@ -306,5 +307,19 @@ class RegisterController extends Controller
         }else{
             return $code . date('ym') .'/'. sprintf("%05s", $no);
         }
+    }
+
+    
+    public function select(Request $request)
+    {
+        $data = UserProgram::select(['id', 'kode as text'])
+        ->when($request->user_id, function($q, $id){
+            return $q->where('user_id', $id);
+        })
+        ->where('status', 'diterima')
+        ->whereDoesntHave('konversi')
+        ->latest()->get();
+
+        return response()->json($data, 200);
     }
 }

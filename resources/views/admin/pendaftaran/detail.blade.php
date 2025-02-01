@@ -21,7 +21,6 @@
                         <x-field-read label="Program" value="{{ $data->program->nama }}"/>
                         <x-field-read label="Tanggal" value="{{ \Carbon\Carbon::parse($data->created_at)->translatedFormat('d F Y') }}"/>
                         <x-field-read label="Status">
-
                             <x-slot name="value">
                                 @if($data->status == 'pending')
                                     <span class="badge bg-warning px-3">Pending</span>
@@ -34,6 +33,10 @@
                                 @endif
                             </x-slot>
                         </x-field-read>
+                        @if ($data->keterangan)
+                            <x-field-read label="Keterangan" value="{{ $data->keterangan }}"/>
+                        @endif
+
                     </div>
                     <div class="col-md-6">
                         <x-field-read label="File CV">
@@ -77,39 +80,45 @@
         function updateStatus(sa){
             alert(sa);
         }
-        function updateStatus(status){
-            var content ='';
-            if(status == 'terima'){
-                var content = 'Terima pendaftaran?';
-            }else{
-                var content = 'Tolak pendaftaran?';
+        function updateStatus(status) {
+    var content = (status == 'terima') ? 'Terima pendaftaran?' : 'Tolak pendaftaran? Silakan berikan alasan:';
+
+    Swal.fire({
+        icon: false,
+        text: content,
+        toast: true,
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+        input: (status == 'tolak') ? 'textarea' : null, // Menampilkan textarea jika status "tolak"
+        inputPlaceholder: "Tuliskan alasan penolakan...",
+        inputValidator: (value) => {
+            if (status == 'tolak' && !value) {
+                return 'Harap isi alasan penolakan!';
             }
-            Swal.fire({
-                icon : false,
-                text: content,
-                toast : true,
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: `Tidak`,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('admin.register.status', $data->id) }}",
-                        type: "POST",
-                        data : {
-                            status : status,
-                            _token : $("meta[name='csrf-token']").attr("content"),
-                        },
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        success: function(data) {
-                            location.reload();
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                        }
-                    });
-                }
-            })
         }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "{{ route('admin.register.status', $data->id) }}",
+                type: "POST",
+                data: {
+                    status: status,
+                    keterangan: result.value || '', // Mengirim alasan jika status "tolak"
+                    _token: $("meta[name='csrf-token']").attr("content"),
+                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    Swal.fire('Error!', 'Terjadi kesalahan, coba lagi nanti.', 'error');
+                }
+            });
+        }
+    });
+}
+
         // function updateStatus(status){
         //     var content ='';
         //     if(status == 'terima'){

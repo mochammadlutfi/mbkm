@@ -28,6 +28,9 @@
                                         @endif
                                     </x-slot>
                                 </x-field-read>
+                                @if ($data->keterangan)
+                                    <x-field-read label="Keterangan" value="{{ $data->keterangan }}"/>
+                                @endif
                             </div>
                             <div class="col-md-6">
                                 <x-field-read label="File CV">

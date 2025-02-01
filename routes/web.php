@@ -70,6 +70,7 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
                 Route::get('/{id}','UserController@show')->name('show');
                 Route::get('/{id}/edit','UserController@edit')->name('edit');
                 Route::post('{id}/update','UserController@update')->name('update');
+                Route::post('{id}/password','UserController@password')->name('password');
                 Route::delete('/{id}/delete','UserController@destroy')->name('delete');
                 Route::get('/{id}/riwayat','UserController@riwayat')->name('riwayat');
             });
@@ -109,6 +110,7 @@ Route::prefix('/admin')->name('admin.')->namespace('Admin')->group(function(){
 
             Route::prefix('/pendaftaran')->name('register.')->group(function () {
                 Route::get('/','RegisterController@index')->name('index');
+                Route::post('/select','RegisterController@select')->name('select');
                 Route::get('/create','RegisterController@create')->name('create');
                 Route::post('/store','RegisterController@store')->name('store');
                 Route::get('/{id}','RegisterController@show')->name('show');

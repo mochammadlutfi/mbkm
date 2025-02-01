@@ -100,7 +100,7 @@
                         @else
                             <div class="space-x1">
                                 <a href="{{ route('login') }}" class="btn btn-primary">Login</a>
-                                <a href="{{ route('register') }}" class="btn btn-outline-primary">Daftar</a>
+                                <a href="{{ route('register') }}" class="btn btn-outline-primary">Register</a>
                             </div>
                         @endif
                     </div>

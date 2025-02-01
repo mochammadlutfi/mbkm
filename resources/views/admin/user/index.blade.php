@@ -28,10 +28,51 @@
             </div>
         </div>
     </div>
+    <div
+        class="modal"
+        id="modal-form"
+        aria-labelledby="modal-form"
+        style="display: none;"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="formData" method="POST" onsubmit="return false;">
+                    <input type="hidden" id="field-id" value=""/>
+                    <div class="block block-rounded shadow-none mb-0">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Ubah Password</h3>
+                            <div class="block-options">
+                                <button
+                                    type="button"
+                                    class="btn-block-option"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content fs-sm">
+                            <x-input-field type="password" id="password" name="password" label="Password Baru" isAjax/>
+                            <x-input-field type="password" id="password_confirmation" name="password_confirmation" label="Konfirmasi Password" isAjax/>
+                        </div>
+                        <div
+                            class="block-content block-content-full block-content-sm text-end border-top">
+                            <button type="button" class="btn btn-alt-secondary" data-bs-dismiss="modal">
+                                Batal
+                            </button>
+                            <button type="submit" class="btn btn-alt-primary" id="btn-simpan">
+                                Simpan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     @push('scripts')
         <script>
-            $(function () {
+            $(document).ready(function () {
                 $('.datatable').DataTable({
                     processing: true,
                     serverSide: true,
@@ -50,6 +91,45 @@
                             searchable: true
                         },
                     ]
+                });
+
+                $("#formData").on("submit",function (e) {
+                    e.preventDefault();
+                    var fomr = $('form#formData')[0];
+                    var formData = new FormData(fomr);
+                    let token   = $("meta[name='csrf-token']").attr("content");
+                    formData.append('_token', token);
+
+                    $("#modal-form .block").addClass('block-mode-loading');
+
+                    let id = $('#field-id').val();
+
+                    $.ajax({
+                        url: `/admin/mahasiswa/${id}/password`,
+                        type: "POST",
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        complete : function(e){
+                            $("#modal-form .block").removeClass('block-mode-loading');
+                        },
+                        success: function (response) {
+                            if (response.fail == false) {
+                                var myModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-form'));
+                                myModal.hide();
+                            } else {
+                                $(this).find('input').removeClass('is-invalid');
+                                for (control in response.errors) {
+                                    $('#field-' + control).addClass('is-invalid');
+                                    $('#error-' + control).html(response.errors[control]);
+                                }
+                            }
+                        },
+                        error: function (error) {
+                        }
+                    });
+
                 });
             });
         function hapus(id){
@@ -104,6 +184,17 @@
                     });
                 }
             })
+        }
+        
+        function openModal(id){
+            $('#field-id').val(id);
+            $('#field-password').val('');
+            $('#field-password_confirmation').val('');
+            var modalForm = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-form'),{
+                backdrop : 'static',
+                keyboard : false
+            });
+            modalForm.show();
         }
         </script>
     @endpush

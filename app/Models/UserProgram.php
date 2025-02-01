@@ -25,4 +25,7 @@ class UserProgram extends Model
         return $this->belongsTo(Program::class, 'program_id');
     }
 
+    public function konversi(){
+        return $this->hasMany(Konversi::class, 'user_program_id');
+    }
 }

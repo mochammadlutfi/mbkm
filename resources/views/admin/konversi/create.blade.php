@@ -13,13 +13,16 @@
             <div class="block block-rounded">
                 <div class="block-content p-4">
                     <div class="row">
-                        <div class="col-md-6">
-                            <x-select-field name="user_program_id" id="user_program_id" placeholder="Pilih" label="No Pendaftaran" :options="$daftar"/>
+                        <div class="col-md-4">
+                            <x-select-field name="user_id" id="user_id" placeholder="Pilih" label="Mahasiswa" :options="$mahasiswa"/>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <x-select-field id="user_program_id" label="No Pendaftaran" placeholder="Pilih" name="user_program_id" :options="[]" disabled/>
+                        </div>
+                        <div class="col-md-4">
                             <x-input-field type="text" name="tgl" label="Tanggal" id="tgl"/>
-                            {{-- {{ $errors->first('tgl') }} --}}
                         </div>
+
                     </div>
                     
                     <table class="table table-bordered table-vcenter" id="tableKonversi">
@@ -72,7 +75,7 @@
                                     <span class="showMitraSKS">0</span>
                                 </td>
                                 <td>
-                                    <input type="text" name="lines[0][mitra_nilai]" class="form-control"/>
+                                    <input type="text" name="lines[0][mitra_nilai]" class="form-control mitra_nilai"/>
                                 </td>
                                 <td>
                                     <select class="form-control matkul required" name="lines[0][matkul_id]">
@@ -86,7 +89,7 @@
                                     <span class="showSKS">0</span>
                                 </td>
                                 <td>
-                                    <input type="text" name="lines[0][nilai]" class="form-control" required/>
+                                    <input type="text" name="lines[0][nilai]" class="form-control nilai" required/>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-danger btn_delete">
@@ -128,8 +131,101 @@
 
     @push('scripts')
     <script>
-        $('#field-user_id').select2();
+        var konversiHuruf = {
+            "A+": "A", "A-": "A", "AB": "A", "A": "A",
+            "B+": "B", "B-": "B", "BC": "B", "B": "B",
+            "C+": "C", "C-": "C", "CD": "C", "C": "C",
+            "D+": "D", "D-": "D", "D": "D",
+            "E+": "E", "E-": "E", "E": "E",
+            "F": "F"
+        };
 
+        function konversiAngka(nilai) {
+            if (nilai >= 85 && nilai <= 100) return "A";
+            if (nilai >= 70 && nilai < 85) return "B";
+            if (nilai >= 56 && nilai < 70) return "C";
+            if (nilai >= 40 && nilai < 56) return "D";
+            if (nilai >= 0 && nilai < 40) return "E";
+            return nilai;
+        }
+
+        $(document).on("input", "input.mitra_nilai", function() {
+            var nilaiMitra = $(this).val().toUpperCase().trim(); 
+
+             // **Batasan input: hanya A-E, F, +, - dan maksimal 2 karakter**
+            if (!/^(A\+?|A-|AB|B\+?|B-|BC|C\+?|C-|CD|D\+?|D-|D|E\+?|E-|E|F|\d{1,3})?$/.test(nilaiMitra)) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Input tidak valid!",
+                    text: "Hanya boleh A-E, F, +, -, atau angka 0-100.",
+                    confirmButtonText: "OK"
+                });
+                $(this).val(""); // Kosongkan input
+                return;
+            }
+
+            // **Jika panjang lebih dari 2 karakter, hapus karakter terakhir**
+            if (nilaiMitra.length > 2 && isNaN(nilaiMitra)) {
+                $(this).val(nilaiMitra.substring(0, 2));
+                return;
+            }
+
+            var nilaiKonversi = null;
+
+            if ($.isNumeric(nilaiMitra)) { // Jika input adalah angka
+                nilaiKonversi = konversiAngka(parseInt(nilaiMitra));
+            } else if (konversiHuruf[nilaiMitra]) { // Jika input adalah huruf dalam daftar
+                nilaiKonversi = konversiHuruf[nilaiMitra];
+            }
+
+            // Jika nilai tidak valid, kosongkan input dan tampilkan SweetAlert
+            if (nilaiKonversi === null) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Nilai tidak valid!",
+                    text: "Silakan masukkan nilai sesuai daftar konversi.",
+                    confirmButtonText: "OK"
+                });
+                $(this).val(""); // Kosongkan input
+                return;
+            }
+            var parentRow = $(this).closest("tr");
+            parentRow.find("input.nilai").val(nilaiKonversi);
+        });
+
+        $('#field-user_id').select2();
+        $('#field-user_program_id').select2({
+            ajax: {
+                url: "{{ route('admin.register.select') }}",
+                type: 'POST',
+                dataType: 'JSON',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        searchTerm: params.term,
+                        user_id : $('#field-user_id').val()
+                    };
+                },
+                processResults: function (response) {
+                    return {
+                        results: response
+                    };
+                },
+                cache: true
+            }
+        });
+
+        $("#field-user_id").on("change", function(e){
+            e.preventDefault();
+            var id = $(this).val();
+            $("#field-user_program_id").trigger('clear');
+            if(id){
+                $("#field-user_program_id").prop("disabled", false);
+            }else{
+                $("#field-user_program_id").prop( "disabled", true );
+            }
+        });
+        
         let idx = 1;
         var table = $("#tableKonversi");
         $(document).on('change', '.mitra_matkul', function() {
@@ -164,7 +260,7 @@
                         <span class="showMitraSKS">0</span>
                     </td>
                     <td>
-                        <input type="text" name="lines[${idx}][mitra_nilai]" class="form-control"/>
+                        <input type="text" name="lines[${idx}][mitra_nilai]" class="form-control mitra_nilai"/>
                     </td>
                     <td>
                         <select class="form-control matkul" required name="lines[${idx}][matkul_id]">
@@ -178,7 +274,7 @@
                         <span class="showSKS">0</span>
                     </td>
                     <td>
-                        <input type="text" name="lines[${idx}][nilai]" required class="form-control"/>
+                        <input type="text" name="lines[${idx}][nilai]" required class="form-control nilai"/>
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger btn_delete">
